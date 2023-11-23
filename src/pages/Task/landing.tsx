@@ -41,7 +41,7 @@ export default function Landing() {
  
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    fetch("http://127.0.0.1:3000/users", {
+    fetch("http://34.31.22.223:3000/users", {
       method: "POST",
       mode: "cors",
       headers: {

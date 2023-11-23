@@ -44,7 +44,7 @@ function TaskLayout() {
   
   const getTasks = async () => {
     const token = localStorage.getItem("token")
-    const response = await fetch("http://127.0.0.1:3000/tasks", {
+    const response = await fetch("http://34.31.22.223:3000/tasks", {
       method: "GET",
       mode: "cors",
       headers: {
@@ -60,7 +60,7 @@ function TaskLayout() {
   
   const updateTask = useMutation(async ({taskID, conditionToSet}: TasksEntryVariables) => {
     const token = localStorage.getItem("token")
-    await fetch("http://127.0.0.1:3000/tasks/" + taskID, {
+    await fetch("http://34.31.22.223:3000/tasks/" + taskID, {
     method: "PATCH",
     mode: "cors",
     headers: {
@@ -81,7 +81,7 @@ function TaskLayout() {
         description: "Can't add an empty task",
       })
     }
-    await fetch("http://127.0.0.1:3000/tasks/", {
+    await fetch("http://34.31.22.223:3000/tasks/", {
       method: "POST",
       mode: "cors",
       headers: {
@@ -96,7 +96,7 @@ function TaskLayout() {
 
   const deleteTask = useMutation(async (taskID: string) => {
     const token = localStorage.getItem("token")
-    await fetch("http://127.0.0.1:3000/tasks/" + taskID, {
+    await fetch("http://34.31.22.223:3000/tasks/" + taskID, {
       method: "DELETE",
       mode: "cors",
       headers: {

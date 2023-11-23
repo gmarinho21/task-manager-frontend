@@ -55,7 +55,7 @@ export function UserLayout() {
       ...(loggedUser.email = values.email && {email: values.email}),
       ...(values.password !== "" && {password: values.password})
     }
-    fetch("http://127.0.0.1:3000/users/me", {
+    fetch("http://34.31.22.223:3000/users/me", {
         method: "PATCH",
         mode: "cors",
         headers: {
@@ -77,7 +77,7 @@ export function UserLayout() {
     }
 
     const token = localStorage.getItem("token")
-    fetch("http://127.0.0.1:3000/users/me/avatar", {
+    fetch("http://34.31.22.223:3000/users/me/avatar", {
       method: "POST",
       mode: "cors",
       headers: {
