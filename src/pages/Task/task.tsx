@@ -42,6 +42,7 @@ function TaskLayout() {
   }, [isUserLogged])
 
   
+  
   const getTasks = async () => {
     const token = localStorage.getItem("token")
     const response = await fetch("http://34.31.22.223:3000/tasks", {
