@@ -5,6 +5,7 @@ import { UserNav } from "@/components/ui/usernav"
 import { useIsUserLoggedStore } from "@/store/isUserLogged"
 import { useUserLoggedStore } from "@/store/loggedUser"
 
+
 function arrayBufferToBase64(buffer) {
   let binary = '';
   const bytes = [].slice.call(new Uint8Array(buffer));
@@ -76,7 +77,7 @@ export default function Layout() {
         <header>
             <nav className="flex items-center justify-between relative p-4">
             <Button variant="ghost">Tasks</Button>
-            <img src="src/assets/logo-name.png" className="h-8"/>
+            <img src="public/assets/logo-name.png" className="h-8"/>
             <UserNav className="" userName={loggedUser.name} userEmail={loggedUser.email} avatar={userAvatar}  />
             </nav>
         </header>
