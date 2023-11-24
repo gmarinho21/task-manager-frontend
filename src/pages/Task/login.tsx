@@ -48,7 +48,7 @@ export function LoginForm() {
  
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    fetch("http://34.31.22.223:3000/users/login", {
+    fetch("https://34.31.22.223:3000/users/login", {
         method: "POST",
         mode: "cors",
         headers: {

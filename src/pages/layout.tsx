@@ -24,7 +24,7 @@ export default function Layout() {
     useEffect(() => {
       if(isUserLogged && loggedUser._id) {
         const token = localStorage.getItem("token")
-        fetch("http://34.31.22.223:3000/users/" + loggedUser._id + "/avatar", {
+        fetch("https://34.31.22.223:3000/users/" + loggedUser._id + "/avatar", {
         method: "GET",
         mode: "cors",
         headers: {
@@ -48,7 +48,7 @@ export default function Layout() {
         if(token) {
 
 
-        fetch("http://34.31.22.223:3000/users/me", {
+        fetch("https://34.31.22.223:3000/users/me", {
           method: "GET",
           mode: "cors",
           headers: {
