@@ -77,7 +77,7 @@ export default function Layout() {
         <header>
             <nav className="flex items-center justify-between relative p-4">
             <Button variant="ghost">Tasks</Button>
-            <img src="public/assets/logo-name.png" className="h-8"/>
+            <img src="dist/assets/logo-name.png" className="h-8"/>
             <UserNav className="" userName={loggedUser.name} userEmail={loggedUser.email} avatar={userAvatar}  />
             </nav>
         </header>
