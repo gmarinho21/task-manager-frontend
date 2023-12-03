@@ -55,7 +55,7 @@ export function UserLayout() {
       ...(loggedUser.email = values.email && {email: values.email}),
       ...(values.password !== "" && {password: values.password})
     }
-    fetch("http://https://tasg-backend-production.up.railway.app:3000/users/me", {
+    fetch("http://tasg-backend-production.up.railway.app:3000/users/me", {
         method: "PATCH",
         mode: "cors",
         headers: {
@@ -77,7 +77,7 @@ export function UserLayout() {
     }
 
     const token = localStorage.getItem("token")
-    fetch("http://https://tasg-backend-production.up.railway.app:3000/users/me/avatar", {
+    fetch("http://tasg-backend-production.up.railway.app:3000/users/me/avatar", {
       method: "POST",
       mode: "cors",
       headers: {
