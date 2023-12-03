@@ -48,7 +48,7 @@ export function LoginForm() {
  
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    fetch("http://tasg-backend-production.up.railway.app:3000/users/login", {
+    fetch("http://tasg-backend-production.up.railway.app/users/login", {
         method: "POST",
         mode: "cors",
         headers: {

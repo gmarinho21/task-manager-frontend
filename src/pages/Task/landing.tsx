@@ -41,7 +41,7 @@ export default function Landing() {
  
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    fetch("http://tasg-backend-production.up.railway.app:3000/users", {
+    fetch("http://tasg-backend-production.up.railway.app/users", {
       method: "POST",
       mode: "cors",
       headers: {

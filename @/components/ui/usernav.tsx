@@ -27,7 +27,7 @@ import {
     
     const logout = async () => {
       const token = localStorage.getItem("token")
-      await fetch("http://127.0.0.1:3000/users/logoutAll", {
+      await fetch("http://127.0.0.1/users/logoutAll", {
         method: "POST",
         mode: "cors",
         headers: {

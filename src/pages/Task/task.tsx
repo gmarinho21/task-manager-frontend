@@ -45,7 +45,7 @@ function TaskLayout() {
   
   const getTasks = async () => {
     const token = localStorage.getItem("token")
-    const response = await fetch("http://tasg-backend-production.up.railway.app:3000/tasks", {
+    const response = await fetch("http://tasg-backend-production.up.railway.app/tasks", {
       method: "GET",
       mode: "cors",
       headers: {
@@ -61,7 +61,7 @@ function TaskLayout() {
   
   const updateTask = useMutation(async ({taskID, conditionToSet}: TasksEntryVariables) => {
     const token = localStorage.getItem("token")
-    await fetch("http://tasg-backend-production.up.railway.app:3000/tasks/" + taskID, {
+    await fetch("http://tasg-backend-production.up.railway.app/tasks/" + taskID, {
     method: "PATCH",
     mode: "cors",
     headers: {
@@ -82,7 +82,7 @@ function TaskLayout() {
         description: "Can't add an empty task",
       })
     }
-    await fetch("http://tasg-backend-production.up.railway.app:3000/tasks/", {
+    await fetch("http://tasg-backend-production.up.railway.app/tasks/", {
       method: "POST",
       mode: "cors",
       headers: {
@@ -97,7 +97,7 @@ function TaskLayout() {
 
   const deleteTask = useMutation(async (taskID: string) => {
     const token = localStorage.getItem("token")
-    await fetch("http://tasg-backend-production.up.railway.app:3000/tasks/" + taskID, {
+    await fetch("http://tasg-backend-production.up.railway.app/tasks/" + taskID, {
       method: "DELETE",
       mode: "cors",
       headers: {
