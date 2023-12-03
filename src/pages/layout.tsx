@@ -25,7 +25,7 @@ export default function Layout() {
     useEffect(() => {
       if(isUserLogged && loggedUser._id) {
         const token = localStorage.getItem("token")
-        fetch(`tasg-backend-production.up.railway.app/users/` + loggedUser._id + "/avatar", {
+        fetch(`https://tasg-backend-production.up.railway.app/users/` + loggedUser._id + "/avatar", {
         method: "GET",
         mode: "cors",
         headers: {
@@ -49,7 +49,7 @@ export default function Layout() {
         if(token) {
 
 
-        fetch("http://tasg-backend-production.up.railway.app/users/me", {
+        fetch("https://tasg-backend-production.up.railway.app/users/me", {
           method: "GET",
           mode: "cors",
           headers: {

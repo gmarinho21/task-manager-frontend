@@ -27,7 +27,7 @@ import {
     
     const logout = async () => {
       const token = localStorage.getItem("token")
-      await fetch("http://127.0.0.1/users/logoutAll", {
+      await fetch("http://tasg-backend-production.up.railway.app/users/logoutAll", {
         method: "POST",
         mode: "cors",
         headers: {
@@ -39,7 +39,6 @@ import {
       changeLoggedState(false)
       navigate("/login", { replace: true })
     }
-
 
     return (
       <DropdownMenu>

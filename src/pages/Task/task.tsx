@@ -111,7 +111,6 @@ function TaskLayout() {
       await queryClient.cancelQueries('tasks')
       return queryClient.setQueryData('tasks', old => {
         return old.filter(card => {
-          console.log(parameters!== card._id)
           return card._id !== parameters})
       })
     }
