@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button"
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -18,6 +17,16 @@ import {
   useMutation,
 } from 'react-query'
 
+import { Calendar } from "@/components/ui/calendar"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+import { cn } from "@/lib/utils"
+import { CalendarIcon } from "@radix-ui/react-icons"
+import { format } from "date-fns"
+
 import '../../index.css'
 import { queryClient } from '../../App'
 
@@ -32,6 +41,7 @@ function TaskLayout() {
   const isUserLogged = useIsUserLoggedStore((state: boolean) => state.isLogged)
   const loggedUser = useUserLoggedStore((state: boolean) => state.userLogged)
   const [clickedDeleteButton, setClickedDeleteButton] = useState("")
+  const [date, setDate] = useState<Date>()
   
   useEffect(() => {
     if(isUserLogged) {
@@ -77,6 +87,7 @@ function TaskLayout() {
     const token = localStorage.getItem("token")
     const textDescription = document.getElementById("taskDescriptionInput").value
     if (!textDescription) {
+      console.log(date)
       return  toast({
         title: "Error",
         description: "Can't add an empty task",
@@ -89,7 +100,10 @@ function TaskLayout() {
         "Content-Type": "application/json",
         "Authorization": "Bearer " + token,
       },
-      body: JSON.stringify({ description: textDescription })
+      body: JSON.stringify({ 
+        description: textDescription,
+        promisedTime: date
+      })
     })
   document.getElementById("taskDescriptionInput").value = ""
   queryClient.invalidateQueries({ queryKey: ['tasks'] })
@@ -116,6 +130,8 @@ function TaskLayout() {
     }
      
   })
+
+  
 
   const taskCards = taskQuery.isLoading ? "" : taskQuery.data.map((task) => {
     return (
@@ -146,6 +162,28 @@ function TaskLayout() {
     </div>
     <div className="flex flex-col gap-4 items-center p-4">
       <Textarea className="w-96" placeholder="Write your task" id="taskDescriptionInput"/>
+      <Popover>
+      <PopoverTrigger asChild>
+        <Button
+          variant={"outline"}
+          className={cn(
+            "w-[240px] justify-start text-left font-normal",
+            !date && "text-muted-foreground"
+          )}
+        >
+          <CalendarIcon className="mr-2 h-4 w-4" />
+          {date ? format(date, "PPP") : <span>Pick a date</span>}
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-auto p-0" align="start">
+        <Calendar
+          mode="single"
+          selected={date}
+          onSelect={setDate}
+          initialFocus
+        />
+      </PopoverContent>
+    </Popover>
       <div className="flex gap-4">
         <Button variant="default" onClick={getTasks}>Reload Tasks</Button>
         <Button variant="default" onClick={addTask.mutate}>Add Task</Button>
