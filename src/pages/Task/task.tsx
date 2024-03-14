@@ -25,7 +25,7 @@ import {
 } from "@/components/ui/popover"
 import { cn } from "@/lib/utils"
 import { CalendarIcon } from "@radix-ui/react-icons"
-import { format } from "date-fns"
+import { format, parseISO } from "date-fns"
 
 import '../../index.css'
 import { queryClient } from '../../App'
@@ -64,6 +64,7 @@ function TaskLayout() {
     }
     )
     const data = await response.json()
+    console.log(format(parseISO("2024-03-05T04:00:00.000Z"), "PPP"))
     return data
   } 
 
@@ -87,7 +88,6 @@ function TaskLayout() {
     const token = localStorage.getItem("token")
     const textDescription = document.getElementById("taskDescriptionInput").value
     if (!textDescription) {
-      console.log(date)
       return  toast({
         title: "Error",
         description: "Can't add an empty task",
@@ -136,13 +136,14 @@ function TaskLayout() {
   const taskCards = taskQuery.isLoading ? "" : taskQuery.data.map((task) => {
     return (
       <Card key={task._id} className="relative">
-        <CardHeader>
+        <CardHeader className="items-center" >
+          <CardTitle>{loggedUser.name}</CardTitle>
+          <CardTitle className="mt-0">{format(parseISO(task.promisedTime), "PPP")}</CardTitle>
           {deleteTask.isLoading && clickedDeleteButton === task._id
           ? <Button className="absolute right-4" variant="deleting" size="icon" disabled>X</Button>
           : <Button className="absolute right-4" variant="destructive" size="icon" onClick={() => {
             setClickedDeleteButton(task._id)
             deleteTask.mutate(task._id)}}>X</Button>}
-          <CardTitle>{loggedUser.name}</CardTitle>
         </CardHeader>
         <CardContent>
           <p>{task.description}</p>
