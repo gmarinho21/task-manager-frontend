@@ -1,6 +1,6 @@
 import { LoginForm } from "./pages/Task/login";
 import TaskLayout from "./pages/Task/task"
-import UserLayout from "./pages/Task/user"
+import UserLayout from "./pages/User/user"
 import Landing from "./pages/Task/landing"
 import AuthRequired from "@/components/helper/AuthRequired"
 import {

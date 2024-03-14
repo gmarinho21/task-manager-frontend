@@ -102,7 +102,7 @@ export function UserLayout() {
                   <Input placeholder={loggedUser?.name || "Your name"} {...field} />
                 </FormControl>
                 <FormDescription>
-                  This is your public display name.
+                  Enter your display name to update.
                 </FormDescription>
                 <FormMessage />
               </FormItem>
@@ -119,7 +119,7 @@ export function UserLayout() {
                   <Input type="email" placeholder={loggedUser?.email || "example@example.com"} {...field} />
                 </FormControl>
                 <FormDescription>
-                  Please Enter your e-mail
+                  Enter your e-mail to update.
                 </FormDescription>
                 <FormMessage />
               </FormItem>

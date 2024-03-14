@@ -64,7 +64,6 @@ function TaskLayout() {
     }
     )
     const data = await response.json()
-    console.log(format(parseISO("2024-03-05T04:00:00.000Z"), "PPP"))
     return data
   } 
 
@@ -135,10 +134,9 @@ function TaskLayout() {
 
   const taskCards = taskQuery.isLoading ? "" : taskQuery.data.map((task) => {
     return (
-      <Card key={task._id} className="relative">
-        <CardHeader className="items-center" >
+      <Card key={task._id} className="relative grow basis-96">
+        <CardHeader >
           <CardTitle>{loggedUser.name}</CardTitle>
-          <CardTitle className="mt-0">{format(parseISO(task.promisedTime), "PPP")}</CardTitle>
           {deleteTask.isLoading && clickedDeleteButton === task._id
           ? <Button className="absolute right-4" variant="deleting" size="icon" disabled>X</Button>
           : <Button className="absolute right-4" variant="destructive" size="icon" onClick={() => {
@@ -148,9 +146,10 @@ function TaskLayout() {
         <CardContent>
           <p>{task.description}</p>
         </CardContent>
-        <CardFooter>
+        <CardFooter className="justify-between gap-6">
           {!task.isCompleted && <Button onClick={() => updateTask.mutate({taskID: task._id, conditionToSet: true})}>Complete</Button>}
           {task.isCompleted && <Button onClick={() => updateTask.mutate({taskID: task._id, conditionToSet: false})}>Uncomplete</Button>}
+          <p><b>Due Date:</b> {task.promisedTime ? format(parseISO(task.promisedTime), "PPP") : "No date set"}</p>
         </CardFooter>
       </Card>
         )})
@@ -168,12 +167,12 @@ function TaskLayout() {
         <Button
           variant={"outline"}
           className={cn(
-            "w-[240px] justify-start text-left font-normal",
+            "w-96 justify-start text-left font-normal",
             !date && "text-muted-foreground"
           )}
         >
           <CalendarIcon className="mr-2 h-4 w-4" />
-          {date ? format(date, "PPP") : <span>Pick a date</span>}
+          {date ? format(date, "PPP") : <span>Pick a date when it's due</span>}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0" align="start">
@@ -189,7 +188,7 @@ function TaskLayout() {
         <Button variant="default" onClick={getTasks}>Reload Tasks</Button>
         <Button variant="default" onClick={addTask.mutate}>Add Task</Button>
       </div>
-      <div className="grid grid-cols-3 gap-4 w-screen px-4">
+      <div className="flex flex-wrap gap-4 w-screenpx-4">
         {taskCards}
       </div>
     </div>

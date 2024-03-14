@@ -70,7 +70,6 @@ export function LoginForm() {
         <Navigate 
             to="/tasks" 
             state={{
-                message: "You must log in first",
                 from: location.pathname
             }} 
             replace

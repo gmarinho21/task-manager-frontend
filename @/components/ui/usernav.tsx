@@ -2,6 +2,7 @@ import * as React from "react"
 import { NavLink, Outlet } from "react-router-dom"
 import { useLocation, useNavigate } from "react-router-dom"
 import { useIsUserLoggedStore } from "@/store/isUserLogged"
+import { useUserLoggedStore } from "@/store/loggedUser"
 
 import {
     Avatar,
@@ -23,6 +24,7 @@ import {
   export function UserNav({...props}) {
     const navigate = useNavigate()
     const changeLoggedState = useIsUserLoggedStore((state) => state.changeLoggedState)
+    const changeLoggedUser = useUserLoggedStore((state) => state.changeUser)
 
     
     const logout = async () => {
@@ -37,6 +39,7 @@ import {
       })
       localStorage.removeItem("token")
       changeLoggedState(false)
+      changeLoggedUser({})
       navigate("/login", { replace: true })
     }
 
@@ -46,7 +49,7 @@ import {
           <Button variant="ghost" className="relative h-8 w-8 rounded-full">
             <Avatar className="h-8 w-8">
               <AvatarImage src={props.avatar} alt="@gabriel.jaka" />
-              <AvatarFallback>SC</AvatarFallback>
+              <AvatarFallback>{props.userName ? props.userName.slice(0,1) : "x"}</AvatarFallback>
             </Avatar>
           </Button>
         </DropdownMenuTrigger>
