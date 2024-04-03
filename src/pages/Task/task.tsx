@@ -18,6 +18,7 @@ import {
 } from 'react-query'
 
 import { Calendar } from "@/components/ui/calendar"
+import { Input } from "@/components/ui/input"
 import {
   Popover,
   PopoverContent,
@@ -26,6 +27,7 @@ import {
 import { cn } from "@/lib/utils"
 import { CalendarIcon } from "@radix-ui/react-icons"
 import { format, parseISO } from "date-fns"
+
 
 import '../../index.css'
 import { queryClient } from '../../App'
@@ -85,11 +87,12 @@ function TaskLayout() {
 
   const addTask = useMutation(async () => {
     const token = localStorage.getItem("token")
-    const textDescription = document.getElementById("taskDescriptionInput").value
-    if (!textDescription) {
+    const taskDescription = document.getElementById("taskDescriptionInput").value
+    const taskTitle = document.getElementById("taskDescriptionInput").value
+    if (!taskDescription || !taskTitle) {
       return  toast({
         title: "Error",
-        description: "Can't add an empty task",
+        description: "Please inform a title and a description",
       })
     }
     await fetch("http://tasg-backend-production.up.railway.app/tasks/", {
@@ -100,11 +103,13 @@ function TaskLayout() {
         "Authorization": "Bearer " + token,
       },
       body: JSON.stringify({ 
-        description: textDescription,
+        title: taskTitle,
+        description: taskDescription,
         promisedTime: date
       })
     })
   document.getElementById("taskDescriptionInput").value = ""
+  document.getElementById("taskTitleInput").value = ""
   queryClient.invalidateQueries({ queryKey: ['tasks'] })
   })
 
@@ -137,6 +142,7 @@ function TaskLayout() {
       <Card key={task._id} className="relative grow basis-96">
         <CardHeader >
           <CardTitle>{loggedUser.name}</CardTitle>
+          <CardTitle>{task.title}</CardTitle>
           {deleteTask.isLoading && clickedDeleteButton === task._id
           ? <Button className="absolute right-4" variant="deleting" size="icon" disabled>X</Button>
           : <Button className="absolute right-4" variant="destructive" size="icon" onClick={() => {
@@ -161,7 +167,8 @@ function TaskLayout() {
     <div className="flex items-center justify-between relative p-4">
     </div>
     <div className="flex flex-col gap-4 items-center p-4">
-      <Textarea className="w-96" placeholder="Write your task" id="taskDescriptionInput"/>
+      <Input className="w-96" placeholder="Write your task title" id="taskTitleInput"/>
+      <Textarea className="w-96" placeholder="Write your task description" id="taskDescriptionInput"/>
       <Popover>
       <PopoverTrigger asChild>
         <Button

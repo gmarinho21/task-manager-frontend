@@ -1,7 +1,8 @@
 import { LoginForm } from "./pages/Task/login";
 import TaskLayout from "./pages/Task/task"
 import UserLayout from "./pages/User/user"
-import Landing from "./pages/Task/landing"
+import ProjectLayout from "./pages/Project/project"
+import Landing from "./pages/landing"
 import AuthRequired from "@/components/helper/AuthRequired"
 import {
   BrowserRouter,
@@ -31,6 +32,7 @@ function App() {
             <Route element={<AuthRequired />} >
               <Route path="/user" element={<UserLayout />}/>
               <Route path="/tasks" element={<TaskLayout />}/>
+              <Route path="/projects" element={<ProjectLayout />}/>
             </Route>
           </Route>
         </Routes>

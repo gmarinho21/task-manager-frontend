@@ -64,6 +64,11 @@ import {
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
         <DropdownMenuGroup>
+        <NavLink to="projects">
+          <DropdownMenuItem>
+             Projects
+          </DropdownMenuItem>
+        </NavLink>
         <NavLink to="tasks">
           <DropdownMenuItem>
              Tasks
