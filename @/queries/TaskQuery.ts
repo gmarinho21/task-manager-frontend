@@ -61,16 +61,8 @@ const useUpdateTask = () => useMutation(async ({taskID, conditionToSet}: TasksEn
 queryClient.invalidateQueries({ queryKey: ['tasks'] })
 })
 
-const useAddTask = () => useMutation(async ({date}) => {
+const useAddTask = () => useMutation(async ({taskDescription, date, taskTitle}) => {
   const token = localStorage.getItem("token")
-  const taskDescription = document.getElementById("taskDescriptionInput").value
-  const taskTitle = document.getElementById("taskTitleInput").value
-  if (!taskDescription || !taskTitle) {
-    return  toast({
-      title: "Error",
-      description: "Please inform a title and a description",
-    })
-  }
   await fetch("http://tasg-backend-production.up.railway.app/tasks/", {
     method: "POST",
     mode: "cors",
@@ -84,8 +76,6 @@ const useAddTask = () => useMutation(async ({date}) => {
       promisedTime: date
     })
   })
-  document.getElementById("taskDescriptionInput").value = ""
-  document.getElementById("taskTitleInput").value = ""
   queryClient.invalidateQueries({ queryKey: ['tasks'] })
 })
 

@@ -83,27 +83,29 @@ function TaskLayout() {
   
   useEffect(() => {
     if(isUserLogged) {
-      getTasks()
+      invaldiateTaskQuery()
     }
   
   }, [isUserLogged])
 
   
-  
-  const getTasks = async () => {
-    const token = localStorage.getItem("token")
-    const response = await fetch("http://tasg-backend-production.up.railway.app/tasks", {
-      method: "GET",
-      mode: "cors",
-      headers: {
-        "Authorization": "Bearer " + token,
-      }
-    }
-    )
-    const data = await response.json()
-    return data
+  const invaldiateTaskQuery = async () => {
+    queryClient.invalidateQueries({ queryKey: ['tasks'] })
   }
 
+  const addNewTask = async () => {
+    const taskDescription = document.getElementById("taskDescriptionInput").value
+    const taskTitle = document.getElementById("taskTitleInput").value
+    if (!taskDescription || !taskTitle) {
+      return  toast({
+        title: "Error",
+        description: "Please inform a title and a description",
+      })
+    }
+    document.getElementById("taskDescriptionInput").value = ""
+    document.getElementById("taskTitleInput").value = ""
+    addTask.mutate({taskDescription, date, taskTitle})
+  }
 
   
 
@@ -163,8 +165,8 @@ function TaskLayout() {
     </Popover>
     <ProjectSelector frameworks={frameworks}/>
       <div className="flex gap-4">
-        <Button variant="default" onClick={getTasks}>Reload Tasks</Button>
-        <Button variant="default" onClick={() => addTask.mutate({date: date})}>Add Task</Button>
+        <Button variant="default" onClick={invaldiateTaskQuery}>Reload Tasks</Button>
+        <Button variant="default" onClick={addNewTask}>Add Task</Button>
       </div>
       <div className="flex flex-wrap gap-4 w-screenpx-4">
         {taskCards}
