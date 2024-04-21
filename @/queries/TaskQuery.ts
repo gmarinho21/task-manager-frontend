@@ -2,6 +2,7 @@ import {
     useQuery,
     useMutation,
   } from 'react-query'
+import { queryClient } from '/src/App'
 
 const getTasks = async () => {
     const token = localStorage.getItem("token")
@@ -79,3 +80,11 @@ const getTasks = async () => {
     }
      
   })
+
+export {
+  getTasks,
+  taskQuery,
+  updateTask,
+  addTask,
+  deleteTask
+}

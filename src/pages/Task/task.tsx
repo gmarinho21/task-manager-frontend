@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button"
+import { ProjectSelector } from "@/components/ui/combobox"
 import {
   Card,
   CardContent,
@@ -12,10 +13,7 @@ import { useToast } from "@/components/ui/use-toast"
 import { Toaster } from "@/components/ui/toaster"
 import { useIsUserLoggedStore } from "@/store/isUserLogged"
 import { useUserLoggedStore } from "@/store/loggedUser"
-import {
-  useQuery,
-  useMutation,
-} from 'react-query'
+
 
 import { Calendar } from "@/components/ui/calendar"
 import { Input } from "@/components/ui/input"
@@ -28,14 +26,41 @@ import { cn } from "@/lib/utils"
 import { CalendarIcon } from "@radix-ui/react-icons"
 import { format, parseISO } from "date-fns"
 
-
 import '../../index.css'
+
+import {
+  useQuery,
+  useMutation,
+} from 'react-query'
 import { queryClient } from '../../App'
 
 interface TasksEntryVariables {
   taskID: string,
   conditionToSet: boolean
 }
+
+const frameworks = [
+  {
+    value: "next.js",
+    label: "Next.js",
+  },
+  {
+    value: "sveltekit",
+    label: "SvelteKit",
+  },
+  {
+    value: "nuxt.js",
+    label: "Nuxt.js",
+  },
+  {
+    value: "remix",
+    label: "Remix",
+  },
+  {
+    value: "astro",
+    label: "Astro",
+  },
+]
 
 
 function TaskLayout() {
@@ -88,7 +113,7 @@ function TaskLayout() {
   const addTask = useMutation(async () => {
     const token = localStorage.getItem("token")
     const taskDescription = document.getElementById("taskDescriptionInput").value
-    const taskTitle = document.getElementById("taskDescriptionInput").value
+    const taskTitle = document.getElementById("taskTitleInput").value
     if (!taskDescription || !taskTitle) {
       return  toast({
         title: "Error",
@@ -191,6 +216,7 @@ function TaskLayout() {
         />
       </PopoverContent>
     </Popover>
+    <ProjectSelector frameworks={frameworks}/>
       <div className="flex gap-4">
         <Button variant="default" onClick={getTasks}>Reload Tasks</Button>
         <Button variant="default" onClick={addTask.mutate}>Add Task</Button>
