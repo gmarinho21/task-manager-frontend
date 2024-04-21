@@ -29,6 +29,13 @@ import { format, parseISO } from "date-fns"
 import '../../index.css'
 
 import {
+  useTaskQuery,
+  useDeleteTask,
+  useUpdateTask,
+  useAddTask,
+} from '@/queries/taskQuery'
+
+import {
   useQuery,
   useMutation,
 } from 'react-query'
@@ -69,11 +76,14 @@ function TaskLayout() {
   const loggedUser = useUserLoggedStore((state: boolean) => state.userLogged)
   const [clickedDeleteButton, setClickedDeleteButton] = useState("")
   const [date, setDate] = useState<Date>()
+  const taskQuery = useTaskQuery()
+  const deleteTask = useDeleteTask()
+  const updateTask = useUpdateTask()
+  const addTask = useAddTask()
   
   useEffect(() => {
     if(isUserLogged) {
       getTasks()
-
     }
   
   }, [isUserLogged])
@@ -92,73 +102,8 @@ function TaskLayout() {
     )
     const data = await response.json()
     return data
-  } 
+  }
 
-  const taskQuery = useQuery('tasks', getTasks)
-  
-  const updateTask = useMutation(async ({taskID, conditionToSet}: TasksEntryVariables) => {
-    const token = localStorage.getItem("token")
-    await fetch("http://tasg-backend-production.up.railway.app/tasks/" + taskID, {
-    method: "PATCH",
-    mode: "cors",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": "Bearer " + token,
-    },
-    body: JSON.stringify({ isCompleted: conditionToSet })
-  })
-  queryClient.invalidateQueries({ queryKey: ['tasks'] })
-  })
-
-  const addTask = useMutation(async () => {
-    const token = localStorage.getItem("token")
-    const taskDescription = document.getElementById("taskDescriptionInput").value
-    const taskTitle = document.getElementById("taskTitleInput").value
-    if (!taskDescription || !taskTitle) {
-      return  toast({
-        title: "Error",
-        description: "Please inform a title and a description",
-      })
-    }
-    await fetch("http://tasg-backend-production.up.railway.app/tasks/", {
-      method: "POST",
-      mode: "cors",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer " + token,
-      },
-      body: JSON.stringify({ 
-        title: taskTitle,
-        description: taskDescription,
-        promisedTime: date
-      })
-    })
-  document.getElementById("taskDescriptionInput").value = ""
-  document.getElementById("taskTitleInput").value = ""
-  queryClient.invalidateQueries({ queryKey: ['tasks'] })
-  })
-
-  const deleteTask = useMutation(async (taskID: string) => {
-    const token = localStorage.getItem("token")
-    await fetch("http://tasg-backend-production.up.railway.app/tasks/" + taskID, {
-      method: "DELETE",
-      mode: "cors",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer " + token,
-      }
-    })
-    queryClient.invalidateQueries({ queryKey: ['tasks'] })
-  },{
-    onSuccess: async(data, parameters) => {
-      await queryClient.cancelQueries('tasks')
-      return queryClient.setQueryData('tasks', old => {
-        return old.filter(card => {
-          return card._id !== parameters})
-      })
-    }
-     
-  })
 
   
 
@@ -219,7 +164,7 @@ function TaskLayout() {
     <ProjectSelector frameworks={frameworks}/>
       <div className="flex gap-4">
         <Button variant="default" onClick={getTasks}>Reload Tasks</Button>
-        <Button variant="default" onClick={addTask.mutate}>Add Task</Button>
+        <Button variant="default" onClick={() => addTask.mutate({date: date})}>Add Task</Button>
       </div>
       <div className="flex flex-wrap gap-4 w-screenpx-4">
         {taskCards}
