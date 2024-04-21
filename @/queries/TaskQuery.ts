@@ -4,6 +4,11 @@ import {
   } from 'react-query'
 import { queryClient } from '/src/App'
 
+interface TasksEntryVariables {
+  taskID: string,
+  conditionToSet: boolean
+}
+
 const getTasks = async () => {
     const token = localStorage.getItem("token")
     const response = await fetch("http://tasg-backend-production.up.railway.app/tasks", {
@@ -18,73 +23,66 @@ const getTasks = async () => {
     return data
   } 
 
-  const taskQuery = useQuery('tasks', getTasks)
-  
-  const updateTask = useMutation(async ({taskID, conditionToSet}: TasksEntryVariables) => {
-    const token = localStorage.getItem("token")
-    await fetch("http://tasg-backend-production.up.railway.app/tasks/" + taskID, {
-    method: "PATCH",
+const useTaskQuery =  () => useQuery('tasks', getTasks)
+
+const useDeleteTask = () => useMutation(async (taskID: string) => {
+  const token = localStorage.getItem("token")
+  await fetch("http://tasg-backend-production.up.railway.app/tasks/" + taskID, {
+    method: "DELETE",
+    mode: "cors",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer " + token,
+    }
+  })
+  queryClient.invalidateQueries({ queryKey: ['tasks'] })
+},{
+  onSuccess: async(data, parameters) => {
+    await queryClient.cancelQueries('tasks')
+    return queryClient.setQueryData('tasks', old => {
+      return old.filter(card => {
+        return card._id !== parameters})
+    })
+  }
+   
+})
+
+const useUpdateTask = () => useMutation(async ({taskID, conditionToSet}: TasksEntryVariables) => {
+  const token = localStorage.getItem("token")
+  await fetch("http://tasg-backend-production.up.railway.app/tasks/" + taskID, {
+  method: "PATCH",
+  mode: "cors",
+  headers: {
+    "Content-Type": "application/json",
+    "Authorization": "Bearer " + token,
+  },
+  body: JSON.stringify({ isCompleted: conditionToSet })
+})
+queryClient.invalidateQueries({ queryKey: ['tasks'] })
+})
+
+const useAddTask = () => useMutation(async ({taskDescription, date, taskTitle}) => {
+  const token = localStorage.getItem("token")
+  await fetch("http://tasg-backend-production.up.railway.app/tasks/", {
+    method: "POST",
     mode: "cors",
     headers: {
       "Content-Type": "application/json",
       "Authorization": "Bearer " + token,
     },
-    body: JSON.stringify({ isCompleted: conditionToSet })
+    body: JSON.stringify({ 
+      title: taskTitle,
+      description: taskDescription,
+      promisedTime: date
+    })
   })
   queryClient.invalidateQueries({ queryKey: ['tasks'] })
-  })
+})
 
-  const addTask = useMutation(async () => {
-    const token = localStorage.getItem("token")
-    const textDescription = document.getElementById("taskDescriptionInput").value
-    if (!textDescription) {
-      return  toast({
-        title: "Error",
-        description: "Can't add an empty task",
-      })
-    }
-    await fetch("http://tasg-backend-production.up.railway.app/tasks/", {
-      method: "POST",
-      mode: "cors",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer " + token,
-      },
-      body: JSON.stringify({ 
-        description: textDescription,
-        promisedTime: date
-      })
-    })
-  document.getElementById("taskDescriptionInput").value = ""
-  queryClient.invalidateQueries({ queryKey: ['tasks'] })
-  })
-
-  const deleteTask = useMutation(async (taskID: string) => {
-    const token = localStorage.getItem("token")
-    await fetch("http://tasg-backend-production.up.railway.app/tasks/" + taskID, {
-      method: "DELETE",
-      mode: "cors",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer " + token,
-      }
-    })
-    queryClient.invalidateQueries({ queryKey: ['tasks'] })
-  },{
-    onSuccess: async(data, parameters) => {
-      await queryClient.cancelQueries('tasks')
-      return queryClient.setQueryData('tasks', old => {
-        return old.filter(card => {
-          return card._id !== parameters})
-      })
-    }
-     
-  })
 
 export {
-  getTasks,
-  taskQuery,
-  updateTask,
-  addTask,
-  deleteTask
+  useTaskQuery,
+  useDeleteTask,
+  useUpdateTask,
+  useAddTask,
 }
