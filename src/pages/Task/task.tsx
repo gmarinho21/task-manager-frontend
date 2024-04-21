@@ -36,9 +36,10 @@ import {
 } from '@/queries/TaskQuery'
 
 import {
-  useQuery,
-  useMutation,
-} from 'react-query'
+  useProjectQuery,
+} from '@/queries/ProjectQuery'
+
+
 import { queryClient } from '../../App'
 
 interface TasksEntryVariables {
@@ -75,21 +76,33 @@ function TaskLayout() {
   const isUserLogged = useIsUserLoggedStore((state: boolean) => state.isLogged)
   const loggedUser = useUserLoggedStore((state: boolean) => state.userLogged)
   const [clickedDeleteButton, setClickedDeleteButton] = useState("")
+  const [projectTitleList, setProjectTitleList] = useState([])
   const [date, setDate] = useState<Date>()
   const taskQuery = useTaskQuery()
+  const projectQuery = useProjectQuery()
   const deleteTask = useDeleteTask()
   const updateTask = useUpdateTask()
   const addTask = useAddTask()
   
   useEffect(() => {
     if(isUserLogged) {
-      invaldiateTaskQuery()
+      invalidateTaskQuery()
     }
   
   }, [isUserLogged])
 
-  
-  const invaldiateTaskQuery = async () => {
+  useEffect(() => {
+    if (!projectQuery.data) {
+      setProjectTitleList([{label : 'empty', value: 'empty'}])
+    } else {
+      const projectTitleListToBeSet = projectQuery.data?.map( project => {
+        return {value: project._id, label: project.name}
+      })
+      setProjectTitleList(projectTitleListToBeSet)
+    }
+  }, [projectQuery.data])
+
+  const invalidateTaskQuery = async () => {
     queryClient.invalidateQueries({ queryKey: ['tasks'] })
   }
 
@@ -163,9 +176,9 @@ function TaskLayout() {
         />
       </PopoverContent>
     </Popover>
-    <ProjectSelector frameworks={frameworks}/>
+    <ProjectSelector frameworks={projectTitleList}/>
       <div className="flex gap-4">
-        <Button variant="default" onClick={invaldiateTaskQuery}>Reload Tasks</Button>
+        <Button variant="default" onClick={invalidateTaskQuery}>Reload Tasks</Button>
         <Button variant="default" onClick={addNewTask}>Add Task</Button>
       </div>
       <div className="flex flex-wrap gap-4 w-screenpx-4">
