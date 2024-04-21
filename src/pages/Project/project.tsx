@@ -29,7 +29,19 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import {
+  useTaskQuery,
+  useDeleteTask,
+  useUpdateTask,
+  useAddTask,
+} from '@/queries/TaskQuery'
 
+import {
+  useProjectQuery,
+  useDeleteProject,
+  useUpdateProject,
+  useAddProject,
+} from '@/queries/ProjectQuery'
 
 
 function ProjectLayout() {
@@ -37,88 +49,37 @@ function ProjectLayout() {
     const isUserLogged = useIsUserLoggedStore((state: boolean) => state.isLogged)
     const loggedUser = useUserLoggedStore((state: boolean) => state.userLogged)
     const [clickedDeleteButton, setClickedDeleteButton] = useState("")
-    
-    const getTasks = async () => {
-      const token = localStorage.getItem("token")
-      const response = await fetch("http://tasg-backend-production.up.railway.app/tasks", {
-        method: "GET",
-        mode: "cors",
-        headers: {
-          "Authorization": "Bearer " + token,
-        }
-      }
-      )
-      const data = await response.json()
-      return data
-    } 
-  
-    const taskQuery = useQuery('tasks', getTasks)
+    const projectQuery = useProjectQuery()
+    const deleteProject = useDeleteProject()
+    const addProject = useAddProject()
 
-    const getProjects = async () => {
-      const token = localStorage.getItem("token")
-      const response = await fetch("http://tasg-backend-production.up.railway.app/projects", {
-        method: "GET",
-        mode: "cors",
-        headers: {
-          "Authorization": "Bearer " + token,
-        }
-      }
-      )
-      const data = await response.json()
-      return data
-    } 
+    const taskQuery = useTaskQuery()
     
-    const projectQuery = useQuery('projects', getProjects)
+    useEffect(() => {
+      if(isUserLogged) {
+        invaldiateProjectQuery()
+      }
+    
+    }, [isUserLogged])
 
-    const addProject = useMutation(async () => {
-      const token = localStorage.getItem("token")
+    const invaldiateProjectQuery = async () => {
+      queryClient.invalidateQueries({ queryKey: ['projects'] })
+    }
+
+    const addNewProject = async () => {
       const textName = document.getElementById("projectNameInput").value
       const textDescription = document.getElementById("projectDescriptionInput").value
-    if (!textDescription) {
-      return  toast({
-        name: "Error",
-        description: "Can't add an empty task",
-      })
-    }
-    await fetch("http://tasg-backend-production.up.railway.app/projects/", {
-      method: "POST",
-      mode: "cors",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer " + token,
-      },
-      body: JSON.stringify({ 
-        name: textName,
-        description: textDescription,
-      })
-    })
-    document.getElementById("projectNameInput").value = ""
-    document.getElementById("projectDescriptionInput").value = ""
-    queryClient.invalidateQueries({ queryKey: ['projects'] })
-    })
-    
-    const deleteProject = useMutation(async (taskID: string) => {
-      const token = localStorage.getItem("token")
-      await fetch("http://tasg-backend-production.up.railway.app/projects/" + taskID, {
-        method: "DELETE",
-        mode: "cors",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer " + token,
-        }
-      })
-      queryClient.invalidateQueries({ queryKey: ['tasks'] })
-    },{
-      onSuccess: async(data, parameters) => {
-        await queryClient.cancelQueries('tasks')
-        return queryClient.setQueryData('tasks', old => {
-          return old.filter(card => {
-            return card._id !== parameters})
+      if (!textDescription) {
+        return  toast({
+          title: "Error",
+          description: "Please inform a title and a description",
         })
       }
-       
-    })
-
+      document.getElementById("projectNameInput").value = ""
+      document.getElementById("projectDescriptionInput").value = ""
+      addProject.mutate({textName, textDescription})
+    }
+    
     const projectCards = projectQuery.isLoading ? "" : projectQuery.data.map((project) => {
       return (
         <Card key={project._id} className="relative grow basis-96">
@@ -161,7 +122,7 @@ function ProjectLayout() {
           <Input className="w-96" placeholder="Write your Project Name" id="projectNameInput"/>
           <Textarea className="w-96" placeholder="Write your Project Description" id="projectDescriptionInput"/>
           <div className="flex gap-4">
-            <Button variant="default" onClick={addProject.mutate}>Add Project</Button>
+            <Button variant="default" onClick={addNewProject}>Add Project</Button>
           </div>
           <div className='grid grid-cols-2 gap-8'>
             <div  className="flex flex-col w-96 gap-4">
