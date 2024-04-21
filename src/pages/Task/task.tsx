@@ -33,7 +33,7 @@ import {
   useDeleteTask,
   useUpdateTask,
   useAddTask,
-} from '@/queries/taskQuery'
+} from '@/queries/TaskQuery'
 
 import {
   useQuery,
