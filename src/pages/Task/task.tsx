@@ -40,36 +40,23 @@ import {
 } from '@/queries/ProjectQuery'
 
 
+import { Check, ChevronsUpDown } from "lucide-react"
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command"
+
+
 import { queryClient } from '../../App'
 
 interface TasksEntryVariables {
   taskID: string,
   conditionToSet: boolean
 }
-
-const frameworks = [
-  {
-    value: "next.js",
-    label: "Next.js",
-  },
-  {
-    value: "sveltekit",
-    label: "SvelteKit",
-  },
-  {
-    value: "nuxt.js",
-    label: "Nuxt.js",
-  },
-  {
-    value: "remix",
-    label: "Remix",
-  },
-  {
-    value: "astro",
-    label: "Astro",
-  },
-]
-
 
 function TaskLayout() {
   const { toast } = useToast()
@@ -83,6 +70,8 @@ function TaskLayout() {
   const deleteTask = useDeleteTask()
   const updateTask = useUpdateTask()
   const addTask = useAddTask()
+  const [open, setOpen] = useState(false)
+  const [selectedProjectID, setSelectedProjectID] = useState("")
   
   useEffect(() => {
     if(isUserLogged) {
@@ -110,6 +99,7 @@ function TaskLayout() {
     const taskDescription = document.getElementById("taskDescriptionInput").value
     const taskTitle = document.getElementById("taskTitleInput").value
     if (!taskDescription || !taskTitle) {
+      console.log(selectedProjectID)
       return  toast({
         title: "Error",
         description: "Please inform a title and a description",
@@ -117,7 +107,7 @@ function TaskLayout() {
     }
     document.getElementById("taskDescriptionInput").value = ""
     document.getElementById("taskTitleInput").value = ""
-    addTask.mutate({taskDescription, date, taskTitle})
+    addTask.mutate({taskDescription, date, taskTitle, selectedProjectID})
   }
 
   
@@ -176,7 +166,51 @@ function TaskLayout() {
         />
       </PopoverContent>
     </Popover>
-    <ProjectSelector frameworks={projectTitleList}/>
+   
+
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <Button
+          variant="outline"
+          role="combobox"
+          aria-expanded={open}
+          className="w-[200px] justify-between"
+        >
+          {selectedProjectID
+            ? projectTitleList.find((projectTitleList) => projectTitleList.value === selectedProjectID)?.label
+            : "Select project..."}
+          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-[200px] p-0">
+      <Command>
+      <CommandInput placeholder="Type to search..." />
+        <CommandList>
+          <CommandEmpty>No results found.</CommandEmpty>
+          <CommandGroup>
+            {projectTitleList.map((projectTitleList) => (
+              <CommandItem
+                key={projectTitleList.value}
+                value={projectTitleList.value}
+                onSelect={(currentValue) => {
+                  setSelectedProjectID(currentValue === selectedProjectID ? "" : currentValue)
+                  setOpen(false)
+                }}
+              >
+                <Check
+                  className={cn(
+                    "mr-2 h-4 w-4",
+                    selectedProjectID === projectTitleList.value ? "opacity-100" : "opacity-0"
+                  )}
+                />
+                {projectTitleList.label}
+              </CommandItem>
+            ))}
+          </CommandGroup>
+        </CommandList>
+      </Command>
+      </PopoverContent>
+    </Popover>
       <div className="flex gap-4">
         <Button variant="default" onClick={invalidateTaskQuery}>Reload Tasks</Button>
         <Button variant="default" onClick={addNewTask}>Add Task</Button>

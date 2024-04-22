@@ -61,7 +61,7 @@ const useUpdateTask = () => useMutation(async ({taskID, conditionToSet}: TasksEn
 queryClient.invalidateQueries({ queryKey: ['tasks'] })
 })
 
-const useAddTask = () => useMutation(async ({taskDescription, date, taskTitle}) => {
+const useAddTask = () => useMutation(async ({taskDescription, date, taskTitle, selectedProjectID}) => {
   const token = localStorage.getItem("token")
   await fetch("http://tasg-backend-production.up.railway.app/tasks/", {
     method: "POST",
@@ -73,7 +73,9 @@ const useAddTask = () => useMutation(async ({taskDescription, date, taskTitle}) 
     body: JSON.stringify({ 
       title: taskTitle,
       description: taskDescription,
-      promisedTime: date
+      promisedTime: date,
+      project: selectedProjectID
+      
     })
   })
   queryClient.invalidateQueries({ queryKey: ['tasks'] })
