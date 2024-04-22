@@ -139,6 +139,7 @@ function ProjectLayout() {
               {projectCards}
             </div>
             <div  className="flex flex-col w-96 gap-4">
+              <div className="sticky top-10">
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -152,6 +153,7 @@ function ProjectLayout() {
                   {taskRows}
                 </TableBody>
               </Table>
+              </div>
             </div>
           </div>
         </div>

@@ -23,7 +23,10 @@ const getTasks = async () => {
     return data
   } 
 
-const useTaskQuery =  () => useQuery('tasks', getTasks)
+const useTaskQuery =  () => useQuery({
+  queryKey: 'tasks',
+  queryFn: getTasks
+})
 
 const useDeleteTask = () => useMutation(async (taskID: string) => {
   const token = localStorage.getItem("token")
