@@ -43,12 +43,15 @@ import {
   useAddProject,
 } from '@/queries/ProjectQuery'
 
+import { LayoutList } from "lucide-react"
+
 
 function ProjectLayout() {
     const { toast } = useToast()
     const isUserLogged = useIsUserLoggedStore((state: boolean) => state.isLogged)
     const loggedUser = useUserLoggedStore((state: boolean) => state.userLogged)
     const [clickedDeleteButton, setClickedDeleteButton] = useState("")
+    const [selectedProject, setSelectedProject] = useState("")
     const projectQuery = useProjectQuery()
     const deleteProject = useDeleteProject()
     const addProject = useAddProject()
@@ -79,7 +82,8 @@ function ProjectLayout() {
       document.getElementById("projectDescriptionInput").value = ""
       addProject.mutate({textName, textDescription})
     }
-    
+
+    console.log(selectedProject)
     const projectCards = projectQuery.isLoading ? "" : projectQuery.data.map((project) => {
       return (
         <Card key={project._id} className="relative grow basis-96">
@@ -90,6 +94,9 @@ function ProjectLayout() {
             : <Button className="absolute right-4" variant="destructive" size="icon" onClick={() => {
               setClickedDeleteButton(project._id)
               deleteProject.mutate(project._id)}}>X</Button>}
+              <Button className="absolute right-16" size="icon" onClick={() => { selectedProject === project._id ? setSelectedProject("") :
+                setSelectedProject(project._id)
+              }}><LayoutList /></Button>
           </CardHeader>
           <CardContent>
             <p>{project.description}</p>
@@ -99,13 +106,15 @@ function ProjectLayout() {
           </CardFooter>
         </Card>
           )})
-
-
+    
+              
     const taskRows = taskQuery.isLoading ? 
       <tr>
         <td>Loading...</td>
       </tr>
-      : taskQuery.data.map((task) => {
+      : taskQuery.data
+      .filter((task) => (selectedProject === "" ? true : task.project === selectedProject))
+      .map((task) => {
       return (
         <TableRow key={task._id}>
           <TableCell className="font-medium">{loggedUser.name}</TableCell>
