@@ -46,12 +46,14 @@ import {
 import { LayoutList } from "lucide-react"
 
 
+
 function ProjectLayout() {
     const { toast } = useToast()
     const isUserLogged = useIsUserLoggedStore((state: boolean) => state.isLogged)
     const loggedUser = useUserLoggedStore((state: boolean) => state.userLogged)
     const [clickedDeleteButton, setClickedDeleteButton] = useState("")
     const [selectedProject, setSelectedProject] = useState("")
+
     const projectQuery = useProjectQuery()
     const deleteProject = useDeleteProject()
     const addProject = useAddProject()
@@ -83,7 +85,6 @@ function ProjectLayout() {
       addProject.mutate({textName, textDescription})
     }
 
-    console.log(selectedProject)
     const projectCards = projectQuery.isLoading ? "" : projectQuery.data.map((project) => {
       return (
         <Card key={project._id} className="relative grow basis-96">

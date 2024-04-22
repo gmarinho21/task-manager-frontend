@@ -39,6 +39,7 @@ import {
   useProjectQuery,
 } from '@/queries/ProjectQuery'
 
+
 import { Check, ChevronsUpDown } from "lucide-react"
 import {
   Command,
@@ -48,6 +49,7 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command"
+
 
 import { queryClient } from '../../App'
 
@@ -164,7 +166,7 @@ function TaskLayout() {
         />
       </PopoverContent>
     </Popover>
-    
+   
 
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -209,7 +211,6 @@ function TaskLayout() {
       </Command>
       </PopoverContent>
     </Popover>
-
       <div className="flex gap-4">
         <Button variant="default" onClick={invalidateTaskQuery}>Reload Tasks</Button>
         <Button variant="default" onClick={addNewTask}>Add Task</Button>
