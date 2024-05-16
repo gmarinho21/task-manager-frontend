@@ -1,27 +1,24 @@
-# React + TypeScript + Vite
+# TASG - Task Manager
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is the frontend for personal project where i can test the tech I'm learning.
+The backend utilizes node API to send requests to a mongoDB where all the information is stored.
+This is a work in progress.
 
-Currently, two official plugins are available:
+There's a live version at tasg.gabriel.com.br
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## What is TASG?
 
-## Expanding the ESLint configuration
+TASG is a task list and planner where you can separate the tasks between projects.
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+I use this project to test new libraries and ideas.
 
-- Configure the top-level `parserOptions` property like this:
+## How to run?
 
-```js
-   parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-   },
+Clone the Repository, then:
+
+```
+   cd task-manager-frontend
+   npm run dev
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+Note: For this to run correctly, you'll will also need to run de backend AND setup a MongoDB instance 
