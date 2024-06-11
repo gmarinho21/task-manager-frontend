@@ -1,7 +1,6 @@
 import "../../index.css";
 import { queryClient } from "../../App";
 import { useEffect, useState } from "react";
-import { useQuery, useMutation } from "react-query";
 import { useIsUserLoggedStore } from "@/store/isUserLogged";
 import { useUserLoggedStore } from "@/store/loggedUser";
 import { Textarea } from "@/components/ui/textarea";
@@ -20,18 +19,12 @@ import { format, parseISO } from "date-fns";
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  useTaskQuery,
-  useDeleteTask,
-  useUpdateTask,
-  useAddTask,
-} from "@/queries/TaskQuery";
+import { useTaskQuery } from "@/queries/TaskQuery";
 
 import {
   useProjectQuery,
@@ -42,10 +35,27 @@ import {
 
 import { LayoutList } from "lucide-react";
 
+interface Task {
+  _id: string;
+  isCompleted: boolean;
+  owner: string;
+  promisedTime: string;
+  title: string;
+  description: string;
+  project: string;
+}
+
+interface Project {
+  _id: string;
+  name: string;
+  description: string;
+  owner: string;
+}
+
 function ProjectLayout() {
   const { toast } = useToast();
-  const isUserLogged = useIsUserLoggedStore((state: boolean) => state.isLogged);
-  const loggedUser = useUserLoggedStore((state: boolean) => state.userLogged);
+  const isUserLogged = useIsUserLoggedStore((state) => state.isLogged);
+  const loggedUser = useUserLoggedStore((state) => state.userLogged);
   const [clickedDeleteButton, setClickedDeleteButton] = useState("");
   const [selectedProject, setSelectedProject] = useState("");
 
@@ -66,9 +76,11 @@ function ProjectLayout() {
   };
 
   const addNewProject = async () => {
-    const textName = document.getElementById("projectNameInput").value;
-    const textDescription = document.getElementById(
-      "projectDescriptionInput"
+    const textName = (
+      document.getElementById("projectNameInput") as HTMLInputElement
+    ).value;
+    const textDescription = (
+      document.getElementById("projectDescriptionInput") as HTMLInputElement
     ).value;
     if (!textDescription) {
       return toast({
@@ -76,14 +88,17 @@ function ProjectLayout() {
         description: "Please inform a title and a description",
       });
     }
-    document.getElementById("projectNameInput").value = "";
-    document.getElementById("projectDescriptionInput").value = "";
+    (document.getElementById("projectNameInput") as HTMLInputElement).value =
+      "";
+    (
+      document.getElementById("projectDescriptionInput") as HTMLInputElement
+    ).value = "";
     addProject.mutate({ textName, textDescription });
   };
 
   const projectCards = projectQuery.isLoading
     ? ""
-    : projectQuery.data.map((project) => {
+    : projectQuery.data.map((project: Project) => {
         return (
           <Card key={project._id} className="relative grow basis-96">
             <CardHeader>
@@ -137,10 +152,10 @@ function ProjectLayout() {
     </tr>
   ) : (
     taskQuery.data
-      .filter((task) =>
+      .filter((task: Task) =>
         selectedProject === "" ? true : task.project === selectedProject
       )
-      .map((task) => {
+      .map((task: Task) => {
         return (
           <TableRow key={task._id}>
             <TableCell className="font-medium">{loggedUser.name}</TableCell>

@@ -31,19 +31,20 @@ const useDeleteProject = () =>
       queryClient.invalidateQueries({ queryKey: ["tasks"] });
     },
     {
-      onSuccess: async (data, parameters) => {
-        await queryClient.cancelQueries("projects");
-        return queryClient.setQueryData("projects", (old) => {
-          return old.filter((card) => {
-            return card._id !== parameters;
-          });
-        });
+      onSuccess: async () => {
+        queryClient.invalidateQueries({ queryKey: ["projects"] });
+        8;
       },
     }
   );
 
+interface AddProjectParams {
+  textName: string;
+  textDescription: string;
+}
+
 const useAddProject = () =>
-  useMutation(async ({ textName, textDescription }) => {
+  useMutation(async ({ textName, textDescription }: AddProjectParams) => {
     const token = localStorage.getItem("token");
     await fetch(`${import.meta.env.VITE_BACKEND_URL}/projects/`, {
       method: "POST",

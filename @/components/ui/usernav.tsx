@@ -1,6 +1,6 @@
 import * as React from "react"
-import { NavLink, Outlet } from "react-router-dom"
-import { useLocation, useNavigate } from "react-router-dom"
+import { NavLink } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import { useIsUserLoggedStore } from "@/store/isUserLogged"
 import { useUserLoggedStore } from "@/store/loggedUser"
 

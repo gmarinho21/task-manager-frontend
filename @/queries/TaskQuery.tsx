@@ -66,9 +66,21 @@ const useUpdateTask = () =>
     queryClient.invalidateQueries({ queryKey: ["tasks"] });
   });
 
+interface AddTaskParams {
+  taskDescription: string;
+  date?: Date;
+  taskTitle: string;
+  selectedProjectID: string;
+}
+
 const useAddTask = () =>
   useMutation(
-    async ({ taskDescription, date, taskTitle, selectedProjectID }) => {
+    async ({
+      taskDescription,
+      date,
+      taskTitle,
+      selectedProjectID,
+    }: AddTaskParams) => {
       const token = localStorage.getItem("token");
       await fetch(`${import.meta.env.VITE_BACKEND_URL}/tasks/`, {
         method: "POST",
