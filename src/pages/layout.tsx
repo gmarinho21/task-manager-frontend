@@ -2,9 +2,6 @@ import { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { UserNav } from "@/components/ui/usernav";
-import { useIsUserLoggedStore } from "@/store/isUserLogged";
-import { useUserLoggedStore } from "@/store/loggedUser";
-
 import { useUserQuery } from "@/queries/UserQuery";
 
 function arrayBufferToBase64(buffer: ArrayBufferLike) {
@@ -16,21 +13,14 @@ function arrayBufferToBase64(buffer: ArrayBufferLike) {
 
 export default function Layout() {
   const userQuery = useUserQuery();
-  const isUserLogged = useIsUserLoggedStore((state) => state.isLogged);
-  const changeLoggedState = useIsUserLoggedStore(
-    (state) => state.changeLoggedState
-  );
-
-  const loggedUser = useUserLoggedStore((state) => state.userLogged);
-  const changeLoggedUser = useUserLoggedStore((state) => state.changeUser);
   const [userAvatar, setUserAvatar] = useState("");
 
   useEffect(() => {
-    if (isUserLogged && loggedUser._id) {
+    if (userQuery.data && userQuery.data._id) {
       const token = localStorage.getItem("token");
       fetch(
-        `https://tasg-backend-production.up.railway.app/users/` +
-          loggedUser._id +
+        `${import.meta.env.VITE_BACKEND_URL}/users/` +
+          userQuery.data._id +
           "/avatar",
         {
           method: "GET",
@@ -50,32 +40,7 @@ export default function Layout() {
     } else {
       setUserAvatar("");
     }
-  }, [isUserLogged, loggedUser]);
-
-  useEffect(() => {
-    try {
-      const token = localStorage.getItem("token");
-      if (token) {
-        fetch(`${import.meta.env.VITE_BACKEND_URL}/users/me`, {
-          method: "GET",
-          mode: "cors",
-          headers: {
-            Authorization: "Bearer " + token,
-          },
-        })
-          .then((res) => res.json())
-          .then((data) => {
-            changeLoggedUser(data);
-            if (!data?.error) {
-              changeLoggedState(true);
-            }
-          });
-      }
-    } catch {
-      changeLoggedUser({});
-      changeLoggedState(false);
-    }
-  }, [isUserLogged, changeLoggedState, changeLoggedUser]);
+  }, [userQuery.data]);
 
   return (
     <>
@@ -85,8 +50,8 @@ export default function Layout() {
           <img src="/assets/logo-name.png" className="h-8" />
           <UserNav
             className=""
-            userName={loggedUser.name}
-            userEmail={loggedUser.email}
+            userName={userQuery.data?.name}
+            userEmail={userQuery.data?.email}
             avatar={userAvatar}
           />
         </nav>

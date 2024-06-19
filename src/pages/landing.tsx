@@ -1,7 +1,9 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { NavLink, Navigate } from "react-router-dom";
+import { useLocation, Navigate, useNavigate, NavLink } from "react-router-dom";
+import { useUserQuery, useRegisterUser } from "@/queries/UserQuery";
+import { useEffect } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -28,6 +30,13 @@ const formSchema = z.object({
 });
 
 export default function Landing() {
+  const registerUser = useRegisterUser();
+  const userQuery = useUserQuery();
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const from = location.state?.from || "/tasks";
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -38,30 +47,21 @@ export default function Landing() {
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    fetch("http://tasg-backend-production.up.railway.app/users", {
-      method: "POST",
-      mode: "cors",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        name: values.username,
-        email: values.email,
-        password: values.password,
-      }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        localStorage.setItem("token", data.token);
-      });
+    registerUser.mutate({ values });
   }
+
+  useEffect(() => {
+    if (userQuery.data) {
+      navigate(from, { replace: true });
+    }
+  }, [userQuery]);
 
   if (localStorage.getItem("token")) {
     return (
       <Navigate
         to="/tasks"
         state={{
-          message: "You must log in first",
+          message: "You are already logged in",
           from: location.pathname,
         }}
         replace
