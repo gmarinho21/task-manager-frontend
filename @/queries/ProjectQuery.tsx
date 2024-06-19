@@ -33,7 +33,6 @@ const useDeleteProject = () =>
     {
       onSuccess: async () => {
         queryClient.invalidateQueries({ queryKey: ["projects"] });
-        8;
       },
     }
   );
