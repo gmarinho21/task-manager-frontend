@@ -5,6 +5,8 @@ import { UserNav } from "@/components/ui/usernav";
 import { useIsUserLoggedStore } from "@/store/isUserLogged";
 import { useUserLoggedStore } from "@/store/loggedUser";
 
+import { useUserQuery } from "@/queries/UserQuery";
+
 function arrayBufferToBase64(buffer: ArrayBufferLike) {
   let binary = "";
   const bytes = [].slice.call(new Uint8Array(buffer));
@@ -13,6 +15,7 @@ function arrayBufferToBase64(buffer: ArrayBufferLike) {
 }
 
 export default function Layout() {
+  const userQuery = useUserQuery();
   const isUserLogged = useIsUserLoggedStore((state) => state.isLogged);
   const changeLoggedState = useIsUserLoggedStore(
     (state) => state.changeLoggedState
