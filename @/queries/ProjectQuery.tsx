@@ -1,6 +1,12 @@
 import { useQuery, useMutation } from "react-query";
 import { queryClient } from "/src/App";
 
+interface ProjectEntryVariables {
+  projectID: string;
+  nameToSet: string;
+  descriptionToSet: string;
+}
+
 const getProjects = async () => {
   const token = localStorage.getItem("token");
   const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/projects`, {
@@ -60,9 +66,28 @@ const useAddProject = () =>
     queryClient.invalidateQueries({ queryKey: ["projects"] });
   });
 
-export {
-  useProjectQuery,
-  useDeleteProject,
-  // useUpdateProject,
-  useAddProject,
-};
+const useUpdateProject = () =>
+  useMutation(
+    async ({
+      projectID,
+      nameToSet,
+      descriptionToSet,
+    }: ProjectEntryVariables) => {
+      const token = localStorage.getItem("token");
+      await fetch(`${import.meta.env.VITE_BACKEND_URL}/projects/` + projectID, {
+        method: "PATCH",
+        mode: "cors",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token,
+        },
+        body: JSON.stringify({
+          name: nameToSet,
+          description: descriptionToSet,
+        }),
+      });
+      queryClient.invalidateQueries({ queryKey: ["projects"] });
+    }
+  );
+
+export { useProjectQuery, useDeleteProject, useUpdateProject, useAddProject };
