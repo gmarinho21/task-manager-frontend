@@ -10,7 +10,6 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useLogout } from "@/queries/UserQuery";
@@ -64,7 +63,6 @@ export function UserNav({ ...props }) {
           </NavLink>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-         feature_edit_project
         <DropdownMenuItem onClick={logout}>Log out</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

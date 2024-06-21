@@ -65,13 +65,15 @@ function TaskLayout() {
   const [projectTitleList, setProjectTitleList] = useState<
     { label: string; value: string }[]
   >([]);
-  const [date, setDate] = useState<Date>();
+  const [promisedDate, setPromisedDate] = useState<Date>();
+  const [taskStartDate, setTaskStartDate] = useState<Date>();
+  const [taskEndDate, setTaskEndDate] = useState<Date>();
   const taskQuery = useTaskQuery();
   const projectQuery = useProjectQuery();
   const deleteTask = useDeleteTask();
   const updateTask = useUpdateTask();
   const addTask = useAddTask();
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState<boolean>(false);
   const [selectedProjectID, setSelectedProjectID] = useState("");
 
   useEffect(() => {
@@ -119,7 +121,14 @@ function TaskLayout() {
       document.getElementById("taskDescriptionInput") as HTMLInputElement
     ).value = "";
     (document.getElementById("taskTitleInput") as HTMLInputElement).value = "";
-    addTask.mutate({ taskDescription, date, taskTitle, selectedProjectID });
+    addTask.mutate({
+      taskDescription,
+      promisedDate,
+      taskStartDate,
+      taskEndDate,
+      taskTitle,
+      selectedProjectID,
+    });
   };
 
   const taskCards = taskQuery.isLoading
@@ -207,18 +216,20 @@ function TaskLayout() {
           placeholder="Write your task description"
           id="taskDescriptionInput"
         />
+
+        {/* promisedDate */}
         <Popover>
           <PopoverTrigger asChild>
             <Button
               variant={"outline"}
               className={cn(
                 "w-96 justify-start text-left font-normal",
-                !date && "text-muted-foreground"
+                !promisedDate && "text-muted-foreground"
               )}
             >
               <CalendarIcon className="mr-2 h-4 w-4" />
-              {date ? (
-                format(date, "PPP")
+              {promisedDate ? (
+                format(promisedDate, "PPP")
               ) : (
                 <span>Pick a date when it's due</span>
               )}
@@ -227,8 +238,64 @@ function TaskLayout() {
           <PopoverContent className="w-auto p-0" align="start">
             <Calendar
               mode="single"
-              selected={date}
-              onSelect={setDate}
+              selected={promisedDate}
+              onSelect={setPromisedDate}
+              initialFocus
+            />
+          </PopoverContent>
+        </Popover>
+
+        {/* taskStartDate */}
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button
+              variant={"outline"}
+              className={cn(
+                "w-96 justify-start text-left font-normal",
+                !taskStartDate && "text-muted-foreground"
+              )}
+            >
+              <CalendarIcon className="mr-2 h-4 w-4" />
+              {taskStartDate ? (
+                format(taskStartDate, "PPP")
+              ) : (
+                <span>Pick a date to start the task</span>
+              )}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0" align="start">
+            <Calendar
+              mode="single"
+              selected={taskStartDate}
+              onSelect={setTaskStartDate}
+              initialFocus
+            />
+          </PopoverContent>
+        </Popover>
+
+        {/* taskEndDate */}
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button
+              variant={"outline"}
+              className={cn(
+                "w-96 justify-start text-left font-normal",
+                !taskEndDate && "text-muted-foreground"
+              )}
+            >
+              <CalendarIcon className="mr-2 h-4 w-4" />
+              {taskEndDate ? (
+                format(taskEndDate, "PPP")
+              ) : (
+                <span>Pick a date to end the task</span>
+              )}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0" align="start">
+            <Calendar
+              mode="single"
+              selected={taskEndDate}
+              onSelect={setTaskEndDate}
               initialFocus
             />
           </PopoverContent>
