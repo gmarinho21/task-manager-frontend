@@ -178,7 +178,7 @@ function TaskLayout() {
                     })
                   }
                 >
-                  Uncomplete
+                  Pending
                 </Button>
               )}
               <p>

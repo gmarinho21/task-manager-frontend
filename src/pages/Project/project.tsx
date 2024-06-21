@@ -2,7 +2,6 @@ import "../../index.css";
 import { queryClient } from "../../App";
 import { useEffect, useState } from "react";
 import { useIsUserLoggedStore } from "@/store/isUserLogged";
-import { useUserLoggedStore } from "@/store/loggedUser";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import { Toaster } from "@/components/ui/toaster";
@@ -25,6 +24,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useTaskQuery } from "@/queries/TaskQuery";
+import { useUserQuery } from "@/queries/UserQuery";
 
 import {
   useProjectQuery,
@@ -33,7 +33,7 @@ import {
   useAddProject,
 } from "@/queries/ProjectQuery";
 
-import { LayoutList } from "lucide-react";
+import { LayoutList, Pencil, Check } from "lucide-react";
 
 interface Task {
   _id: string;
@@ -52,16 +52,27 @@ interface Project {
   owner: string;
 }
 
+interface ProjectEntryVariables {
+  projectID: string;
+  nameToSet: string;
+  descriptionToSet: boolean;
+}
+
 function ProjectLayout() {
   const { toast } = useToast();
   const isUserLogged = useIsUserLoggedStore((state) => state.isLogged);
-  const loggedUser = useUserLoggedStore((state) => state.userLogged);
   const [clickedDeleteButton, setClickedDeleteButton] = useState("");
   const [selectedProject, setSelectedProject] = useState("");
+  const [selectedProjectToEdit, setSelectedProjectToEdit] = useState("");
+  const [editingName, setEditingName] = useState("");
+  const [editingDescription, setEditingDescription] = useState("");
+
+  const userQuery = useUserQuery();
 
   const projectQuery = useProjectQuery();
   const deleteProject = useDeleteProject();
   const addProject = useAddProject();
+  const updateProject = useUpdateProject();
 
   const taskQuery = useTaskQuery();
 
@@ -70,6 +81,30 @@ function ProjectLayout() {
       invaldiateProjectQuery();
     }
   }, [isUserLogged]);
+
+  function selectProjetToEdit(
+    projectID: string,
+    projectName: string,
+    projectDescription: string
+  ) {
+    if (selectedProject === projectID) {
+      setSelectedProjectToEdit("");
+    } else {
+      setSelectedProjectToEdit(projectID);
+      setEditingName(projectName);
+      setEditingDescription(projectDescription);
+    }
+  }
+
+  function handleDescriptionChange(e) {
+    e.preventDefault();
+    setEditingDescription(e.target.value);
+  }
+
+  function handleNameChange(e) {
+    e.preventDefault();
+    setEditingName(e.target.value);
+  }
 
   const invaldiateProjectQuery = async () => {
     queryClient.invalidateQueries({ queryKey: ["projects"] });
@@ -100,46 +135,108 @@ function ProjectLayout() {
     ? ""
     : projectQuery.data.map((project: Project) => {
         return (
-          <Card key={project._id} className="relative grow basis-96">
-            <CardHeader>
-              <CardTitle>{project.name}</CardTitle>
-              {deleteProject.isLoading &&
-              clickedDeleteButton === project._id ? (
-                <Button
-                  className="absolute right-4"
-                  variant="deleting"
-                  size="icon"
-                  disabled
-                >
-                  X
-                </Button>
+          <Card key={project._id} className="grow">
+            <CardHeader className="relative">
+              <CardTitle className="w-3/4">
+                {selectedProjectToEdit === project._id ? (
+                  <Input
+                    className="flex-grow "
+                    value={editingName}
+                    onChange={handleNameChange}
+                  />
+                ) : (
+                  project.name
+                )}
+              </CardTitle>
+
+              {selectedProjectToEdit === project._id ? (
+                <>
+                  <Button
+                    className="absolute right-16"
+                    size="icon"
+                    variant="confirm"
+                    onClick={() => {
+                      updateProject.mutate(
+                        {
+                          projectID: project._id,
+                          nameToSet: editingName,
+                          descriptionToSet: editingDescription,
+                        },
+                        {
+                          onSuccess: () => {
+                            setSelectedProjectToEdit("");
+                          },
+                        }
+                      );
+                    }}
+                  >
+                    <Check />
+                  </Button>
+                  {deleteProject.isLoading &&
+                  clickedDeleteButton === project._id ? (
+                    <Button
+                      className="absolute right-4"
+                      variant="deleting"
+                      size="icon"
+                      disabled
+                    >
+                      X
+                    </Button>
+                  ) : (
+                    <Button
+                      className="absolute right-4"
+                      variant="destructive"
+                      size="icon"
+                      onClick={() => {
+                        setClickedDeleteButton(project._id);
+                        deleteProject.mutate(project._id);
+                      }}
+                    >
+                      X
+                    </Button>
+                  )}
+                </>
               ) : (
-                <Button
-                  className="absolute right-4"
-                  variant="destructive"
-                  size="icon"
-                  onClick={() => {
-                    setClickedDeleteButton(project._id);
-                    deleteProject.mutate(project._id);
-                  }}
-                >
-                  X
-                </Button>
+                <>
+                  <Button
+                    className="absolute right-16"
+                    size="icon"
+                    onClick={() => {
+                      selectedProject === project._id
+                        ? setSelectedProject("")
+                        : setSelectedProject(project._id);
+                    }}
+                  >
+                    <LayoutList />
+                  </Button>
+                  <Button
+                    className="absolute right-4"
+                    size="icon"
+                    onClick={() => {
+                      selectProjetToEdit(
+                        project._id,
+                        project.name,
+                        project.description
+                      );
+                    }}
+                  >
+                    <Pencil />
+                  </Button>
+                </>
               )}
-              <Button
-                className="absolute right-16"
-                size="icon"
-                onClick={() => {
-                  selectedProject === project._id
-                    ? setSelectedProject("")
-                    : setSelectedProject(project._id);
-                }}
-              >
-                <LayoutList />
-              </Button>
             </CardHeader>
-            <CardContent>
-              <p>{project.description}</p>
+            <CardContent className="pt-4">
+              <p>
+                {selectedProjectToEdit === project._id ? (
+                  <Textarea
+                    className="flex-grow "
+                    value={editingDescription}
+                    onChange={handleDescriptionChange}
+                  />
+                ) : (
+                  project.description
+                )}
+              </p>
             </CardContent>
             <CardFooter className="justify-between gap-6">FOOTER</CardFooter>
           </Card>
@@ -158,16 +255,14 @@ function ProjectLayout() {
       .map((task: Task) => {
         return (
           <TableRow key={task._id}>
-            <TableCell className="font-medium">{loggedUser.name}</TableCell>
+            <TableCell className="font-medium">{userQuery.data.name}</TableCell>
             <TableCell>{task.title}</TableCell>
             <TableCell>
               {task.promisedTime
                 ? format(parseISO(task.promisedTime), "PPP")
                 : "No date set"}
             </TableCell>
-            <TableCell>
-              {task.isCompleted ? "Finished" : "Unfinished"}
-            </TableCell>
+            <TableCell>{task.isCompleted ? "Complete" : "Pending"}</TableCell>
           </TableRow>
         );
       })
