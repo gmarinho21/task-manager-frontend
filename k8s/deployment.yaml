@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: tasg-deployment
+  labels:
+    app: tasg
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tasg
+  template:
+    metadata:
+      labels:
+        app: tasg
+    spec:
+      containers:
+        - name: tasg-frontend
+          image: gmarinho21/tasg:fd341e2
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              cpu: 200m
+              memory: 300Mi
+            limits:
+              cpu: 300m
+              memory: 500Mi
