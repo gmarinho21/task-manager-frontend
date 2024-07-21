@@ -5,7 +5,7 @@ metadata:
   namespace: tasg
 spec:
   ports:
-  - port: 80
+  - port: 8181
     targetPort: 80
   selector:
     app: tasg
