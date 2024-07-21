@@ -64,7 +64,6 @@ export function UserNav({ ...props }) {
           </NavLink>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-         feature_edit_project
         <DropdownMenuItem onClick={logout}>Log out</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
