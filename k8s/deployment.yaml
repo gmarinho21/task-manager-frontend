@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: tasg-frontend
-          image: gmarinho21/tasg:latest
+          image: gmarinho21/tasg:a093068
           ports:
             - containerPort: 80
           resources:
