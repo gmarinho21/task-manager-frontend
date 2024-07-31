@@ -1,0 +1,14 @@
+services:
+
+  frontend:
+    container_name : frontend
+    build: .
+    ports:
+      - 80:80
+    networks:
+      - tasg
+
+networks:
+  tasg:
+    driver: bridge
+  
