@@ -6,11 +6,14 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import { Toaster } from "@/components/ui/toaster";
 import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { Badge } from "@/components/ui/badge";
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
+  CardDescription,
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -262,7 +265,13 @@ function ProjectLayout() {
                 ? format(parseISO(task.promisedTime), "PPP")
                 : "No date set"}
             </TableCell>
-            <TableCell>{task.isCompleted ? "Complete" : "Pending"}</TableCell>
+            <TableCell>
+              {task.isCompleted ? (
+                <Badge variant="outline">Completed</Badge>
+              ) : (
+                <Badge variant="outline">Completed</Badge>
+              )}
+            </TableCell>
           </TableRow>
         );
       })
@@ -288,21 +297,62 @@ function ProjectLayout() {
           </Button>
         </div>
         <div className="grid grid-cols-2 gap-8">
-          <div className="flex flex-col w-96 gap-4">{projectCards}</div>
-          <div className="flex flex-col w-96 gap-4">
-            <div className="sticky top-10">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="w-[100px]">Owner</TableHead>
-                    <TableHead className="w-[100px]">Title</TableHead>
-                    <TableHead className="w-[150px]">Due Date</TableHead>
-                    <TableHead className="w-[100px]">Status</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>{taskRows}</TableBody>
-              </Table>
-            </div>
+          <div className="flex flex-col min-w-96 gap-4">{projectCards}</div>
+          <div>
+            <Card className="overflow-hidden" x-chunk="dashboard-06-chunk-2">
+              <CardHeader className="flex flex-row items-start bg-muted/50">
+                <div className="grid gap-0.5">
+                  <CardTitle>Project Details</CardTitle>
+                  <CardDescription>
+                    View details of the selected project.
+                  </CardDescription>
+                </div>
+              </CardHeader>
+              <CardContent className="p-6 text-sm">
+                <div className="grid gap-3">
+                  <div className="font-semibold">Project Information</div>
+                  <dl className="grid gap-3">
+                    <div className="flex items-center justify-between">
+                      <dt className="text-muted-foreground">Project Name</dt>
+                      <dd>Website Redesign</dd>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <dt className="text-muted-foreground">Description</dt>
+                      <dd>Updating the company website</dd>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <dt className="text-muted-foreground">Status</dt>
+                      <dd>
+                        <Badge variant="secondary">In Progress</Badge>
+                      </dd>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <dt className="text-muted-foreground">Start Date</dt>
+                      <dd>2023-04-01</dd>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <dt className="text-muted-foreground">End Date</dt>
+                      <dd>2023-06-30</dd>
+                    </div>
+                  </dl>
+                </div>
+                <Separator className="my-4" />
+                <div className="grid gap-3">
+                  <div className="font-semibold">Tasks</div>
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead className="w-[100px]">Owner</TableHead>
+                        <TableHead className="w-[100px]">Title</TableHead>
+                        <TableHead className="w-[150px]">Due Date</TableHead>
+                        <TableHead className="w-[100px]">Status</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>{taskRows}</TableBody>
+                  </Table>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </div>
