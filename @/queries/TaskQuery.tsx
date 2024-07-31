@@ -68,7 +68,9 @@ const useUpdateTask = () =>
 
 interface AddTaskParams {
   taskDescription: string;
-  date?: Date;
+  promisedDate?: Date;
+  taskStartDate?: Date;
+  taskEndDate?: Date;
   taskTitle: string;
   selectedProjectID: string;
 }
@@ -77,7 +79,9 @@ const useAddTask = () =>
   useMutation(
     async ({
       taskDescription,
-      date,
+      promisedDate,
+      taskStartDate,
+      taskEndDate,
       taskTitle,
       selectedProjectID,
     }: AddTaskParams) => {
@@ -92,7 +96,9 @@ const useAddTask = () =>
         body: JSON.stringify({
           title: taskTitle,
           description: taskDescription,
-          promisedTime: date,
+          promisedTime: promisedDate,
+          startTime: taskStartDate,
+          endTime: taskEndDate,
           project: selectedProjectID,
         }),
       });
