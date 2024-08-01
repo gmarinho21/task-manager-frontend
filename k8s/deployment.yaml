@@ -1,11 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
-
 metadata:
   name: tasg-deployment
   labels:
     app: tasg
-
 spec:
   replicas: 1
   selector:
@@ -18,7 +16,7 @@ spec:
     spec:
       containers:
         - name: tasg-frontend
-          image: gmarinho21/tasg:a093068
+          image: gmarinho21/tasg:83fd6ad
           imagePullPolicy: Always
           ports:
             - containerPort: 80
