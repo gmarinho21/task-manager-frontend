@@ -35,6 +35,8 @@ jobs:
           tags: |
             gmarinho21/tasg:${{ steps.generate_sha.outputs.sha}}
             gmarinho21/tasg:latest
+          secret-envs: |
+            VITE_BACKEND_URL=${{ secrets.VITE_BACKEND_URL }}
 
       - name: Ensure Branch Exists
         run: |
