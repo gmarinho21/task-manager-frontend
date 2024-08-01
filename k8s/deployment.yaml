@@ -27,35 +27,4 @@ spec:
               memory: 300Mi
             limits:
               cpu: 300m
-              memory: 500Mi
-        env:
-        - name: tasg-backend-secret
-          valueFrom:
-            configMapKeyRef:
-              name: PORT
-              key: tasg-backend-secret
-        - name: tasg-backend-secret
-          valueFrom:
-            configMapKeyRef:
-              name: JWT_SECRET
-              key: tasg-backend-secret
-        - name: tasg-backend-secret
-          valueFrom:
-            configMapKeyRef:
-              name: DB_USER
-              key: tasg-backend-secret
-        - name: tasg-backend-secret
-          valueFrom:
-            configMapKeyRef:
-              name: DB_PASSWORD
-              key: tasg-backend-secret
-        - name: tasg-backend-secret
-          valueFrom:
-            configMapKeyRef:
-              name: DB_PATH
-              key: tasg-backend-secret
-        - name: tasg-backend-secret
-          valueFrom:
-            configMapKeyRef:
-              name: RESEND_API_KEY
-              key: tasg-backend-secret                                                                      
+              memory: 500Mi                                                          
