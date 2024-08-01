@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: tasg-frontend
-          image: gmarinho21/tasg:83fd6ad
+          image: gmarinho21/tasg:7512edf
           imagePullPolicy: Always
           ports:
             - containerPort: 80
