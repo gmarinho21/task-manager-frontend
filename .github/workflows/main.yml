@@ -36,14 +36,28 @@ jobs:
             gmarinho21/tasg:${{ steps.generate_sha.outputs.sha}}
             gmarinho21/tasg:latest
 
-      # - name: Update image deployment
-      #   uses: fjogeleit/yaml-update-action@main
-      #   with:
-      #     branch: release
-      #     targetBranch: main
-      #     createPR: true
-      #     valueFile: 'k8s/deployment.yaml'
-      #     propertyPath: 'spec.template.spec.containers.image'
-      #     value: ${{ steps.generate_sha.outputs.sha }}
-      #     commitChange: true
-      #     message: "[skip ci] Update tag in values helm"
+      - name: Ensure Branch Exists
+        run: |
+          echo "Checking if branch exists..."
+          BRANCH=release  # Define your branch here
+          git fetch origin
+          if git branch -r | grep -w "origin/$BRANCH"; then
+            echo "Branch '$BRANCH' already exists."
+          else
+            echo "Branch '$BRANCH' does not exist. Creating it..."
+            git checkout -b $BRANCH
+            git push origin $BRANCH
+          fi
+
+      - name: Update image deployment
+        uses: fjogeleit/yaml-update-action@main
+        with:
+          branch: release
+          targetBranch: main
+          createPR: true
+          valueFile: "k8s/deployment.yaml"
+          propertyPath: "spec.template.spec.containers[0].image"
+          value: gmarinho21/tasg:${{ steps.generate_sha.outputs.sha }}
+          commitChange: true
+          message: "[skip ci] Update tag in values helm"
+          token: ${{ secrets.GITHUB_TOKEN }}
