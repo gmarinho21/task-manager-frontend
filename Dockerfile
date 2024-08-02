@@ -7,7 +7,6 @@ COPY . ./
 
 # Build arguments for Vite
 ARG VITE_BACKEND_URL
-ARG VITE_OTHER_KEY
 
 # Pass build arguments as environment variables for Vite
 ENV VITE_BACKEND_URL=$VITE_BACKEND_URL
