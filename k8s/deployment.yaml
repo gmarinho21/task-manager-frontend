@@ -14,9 +14,10 @@ spec:
       labels:
         app: tasg
     spec:
+      automountServiceAccountToken: false
       containers:
         - name: tasg-frontend
-          image: gmarinho21/tasg:ba2cb81
+          image: gmarinho21/tasg:50fc13f
           imagePullPolicy: Always
           ports:
             - containerPort: 80
@@ -27,6 +28,7 @@ spec:
             limits:
               cpu: 300m
               memory: 500Mi
+              ephemeral-storage: 2Gi
           env:
             - name: VITE_BACKEND_URL
               valueFrom:
