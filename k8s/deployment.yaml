@@ -17,7 +17,7 @@ spec:
       automountServiceAccountToken: false
       containers:
         - name: tasg-frontend
-          image: gmarinho21/tasg:ba2cb81
+          image: gmarinho21/tasg:50fc13f
           imagePullPolicy: Always
           ports:
             - containerPort: 80
