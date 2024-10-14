@@ -25,10 +25,11 @@ spec:
             requests:
               cpu: 200m
               memory: 300Mi
+              ephemeral-storage: 2Gi
             limits:
               cpu: 300m
               memory: 500Mi
-              ephemeral-storage: 2Gi
+              ephemeral-storage: 3Gi
           env:
             - name: VITE_BACKEND_URL
               valueFrom:
