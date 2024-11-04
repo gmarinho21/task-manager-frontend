@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - rollout_test
 
 jobs:
   build-and-push:
@@ -37,7 +38,6 @@ jobs:
             gmarinho21/tasg:latest
           build-args: |
             "VITE_BACKEND_URL=${{ secrets.VITE_BACKEND_URL }}"
-
 
       - name: Ensure Branch Exists
         run: |

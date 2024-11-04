@@ -46,7 +46,6 @@ export default function Layout() {
     <>
       <header>
         <nav className="flex items-center justify-between relative p-4">
-          <Button variant="ghost">Tasks</Button>
           <img src="/assets/logo-name.png" className="h-8" />
           <UserNav
             className=""
