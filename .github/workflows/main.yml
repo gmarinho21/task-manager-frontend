@@ -58,7 +58,7 @@ jobs:
           branch: release
           targetBranch: main
           createPR: true
-          valueFile: "k8s/deployment.yaml"
+          valueFile: "k8s/rollout.yaml"
           propertyPath: "spec.template.spec.containers[0].image"
           value: gmarinho21/tasg:${{ steps.generate_sha.outputs.sha }}
           commitChange: true
