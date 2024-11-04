@@ -1,0 +1,53 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: tasg-rollout-bluegreen
+  namespace: argo-rollouts
+spec:
+  replicas: 2
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: tasg-rollout
+  template:
+    metadata:
+      namespace: tasg
+      labels:
+        app: tasg-rollout
+    spec:
+      automountServiceAccountToken: false
+      containers:
+        - name: tasg-frontend
+          image: gmarinho21/tasg:48a82d5
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              cpu: 200m
+              memory: 300Mi
+              ephemeral-storage: 2Gi
+            limits:
+              cpu: 300m
+              memory: 500Mi
+              ephemeral-storage: 3Gi
+          env:
+            - name: VITE_BACKEND_URL
+              valueFrom:
+                secretKeyRef:
+                  name: tasg-frontend-secret
+                  key: VITE_BACKEND_URL
+  strategy:
+    blueGreen:
+      # activeService specifies the service to update with the new template hash at time of promotion.
+      # This field is mandatory for the blueGreen update strategy.
+      activeService: rollout-bluegreen-active
+      # previewService specifies the service to update with the new template hash before promotion.
+      # This allows the preview stack to be reachable without serving production traffic.
+      # This field is optional.
+      previewService: rollout-bluegreen-preview
+      # autoPromotionEnabled disables automated promotion of the new stack by pausing the rollout
+      # immediately before the promotion. If omitted, the default behavior is to promote the new
+      # stack as soon as the ReplicaSet are completely ready/available.
+      # Rollouts can be resumed using: `kubectl argo rollouts promote ROLLOUT`
+      autoPromotionEnabled: false

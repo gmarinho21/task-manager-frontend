@@ -1,11 +1,53 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: tasg-frontend-service
+  name: tasg-rollout-frontend-service-active
   namespace: tasg
 spec:
   ports:
-  - port: 8181
-    targetPort: 80
+    - port: 8181
+      targetPort: 80
   selector:
     app: tasg
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tasg-rollout-frontend-service-preview
+  namespace: tasg
+spec:
+  ports:
+    - port: 8181
+      targetPort: 80
+  selector:
+    app: tasg
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRouteTCP
+metadata:
+  name: tasg-rollout-ingress-active
+  namespace: tasg
+spec:
+  entryPoints:
+    - tasg
+  routes:
+    - match: HostSNI(`*`)
+      services:
+        - name: tasg-frontend-service
+          port: 8181
+          terminationDelay: -1
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRouteTCP
+metadata:
+  name: tasg-rollout-ingress-preview
+  namespace: tasg
+spec:
+  entryPoints:
+    - tasg-preview
+  routes:
+    - match: HostSNI(`*`)
+      services:
+        - name: tasg-frontend-service
+          port: 8181
+          terminationDelay: -1
