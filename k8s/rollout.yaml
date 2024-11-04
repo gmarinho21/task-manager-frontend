@@ -2,7 +2,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: Rollout
 metadata:
   name: tasg-rollout-bluegreen
-  namespace: argo-rollouts
+  namespace: tasg
 spec:
   replicas: 2
   revisionHistoryLimit: 2
