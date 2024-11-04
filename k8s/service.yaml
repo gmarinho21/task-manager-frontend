@@ -33,7 +33,7 @@ spec:
   routes:
     - match: HostSNI(`*`)
       services:
-        - name: tasg-frontend-service
+        - name: tasg-rollout-frontend-service-active
           port: 8181
           terminationDelay: -1
 ---
@@ -48,6 +48,6 @@ spec:
   routes:
     - match: HostSNI(`*`)
       services:
-        - name: tasg-frontend-service
+        - name: tasg-rollout-frontend-service-preview
           port: 8181
           terminationDelay: -1
