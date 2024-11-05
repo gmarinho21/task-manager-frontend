@@ -44,7 +44,7 @@ metadata:
   namespace: tasg
 spec:
   entryPoints:
-    - another
+    - tasg-preview
   routes:
     - match: HostSNI(`*`)
       services:
