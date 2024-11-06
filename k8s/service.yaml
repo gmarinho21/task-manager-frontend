@@ -61,7 +61,7 @@ metadata:
   namespace: tasg
 spec:
   entryPoints:
-    - webscure
+    - websecure
   routes:
     - kind: Rule
       match: Host(`tasg.preview.gabrielm.com.br`)
@@ -69,3 +69,5 @@ spec:
         - kind: Service
           name: tasg-rollout-frontend-service-active
           port: 8181
+  tls:
+    certResolver: letsencrypt
