@@ -53,3 +53,21 @@ spec:
         - kind: Service
           name: tasg-rollout-frontend-service-preview
           port: 8181
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: tasg-rollout-ingress-active
+  namespace: tasg
+spec:
+  entryPoints:
+    - webscure
+  routes:
+    - kind: Rule
+      match: Host(`tasg.preview.gabrielm.com.br`)
+      services:
+        - kind: Service
+          name: tasg-rollout-frontend-service-active
+          port: 8181
+  tls:
+    certResolver: letsencrypt
