@@ -29,9 +29,9 @@ metadata:
   namespace: tasg
 spec:
   entryPoints:
-    - tasg
+    - web
   routes:
-    - match: HostSNI(`*`)
+    - match: Host(`tasg.preview.gabrielm.com.br`)
       services:
         - name: tasg-rollout-frontend-service-active
           port: 8181
@@ -44,9 +44,9 @@ metadata:
   namespace: tasg
 spec:
   entryPoints:
-    - anothertasg
+    - web
   routes:
-    - match: HostSNI(`*`)
+    - match: Host(`tasg.dev.gabrielm.com.br`)
       services:
         - name: tasg-rollout-frontend-service-preview
           port: 8181
