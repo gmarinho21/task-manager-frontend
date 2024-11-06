@@ -23,7 +23,7 @@ spec:
     app: tasg-rollout
 ---
 apiVersion: traefik.containo.us/v1alpha1
-kind: IngressRouteTCP
+kind: IngressRoute
 metadata:
   name: tasg-rollout-ingress-active
   namespace: tasg
@@ -31,14 +31,15 @@ spec:
   entryPoints:
     - web
   routes:
-    - match: Host(`tasg.preview.gabrielm.com.br`)
+    - kind: Rule
+      match: Host(`tasg.preview.gabrielm.com.br`)
       services:
-        - name: tasg-rollout-frontend-service-active
+        - kind: Service
+          name: tasg-frontend-service
           port: 8181
-          terminationDelay: -1
 ---
 apiVersion: traefik.containo.us/v1alpha1
-kind: IngressRouteTCP
+kind: IngressRoute
 metadata:
   name: tasg-rollout-ingress-preview
   namespace: tasg
@@ -46,8 +47,9 @@ spec:
   entryPoints:
     - web
   routes:
-    - match: Host(`tasg.dev.gabrielm.com.br`)
+    - kind: Rule
+      match: Host(`tasg.dev.gabrielm.com.br`)
       services:
-        - name: tasg-rollout-frontend-service-preview
+        - kind: Service
+          name: tasg-frontend-service
           port: 8181
-          terminationDelay: -1
