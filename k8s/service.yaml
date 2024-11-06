@@ -69,5 +69,3 @@ spec:
         - kind: Service
           name: tasg-rollout-frontend-service-active
           port: 8181
-  tls:
-    certResolver: letsencrypt
