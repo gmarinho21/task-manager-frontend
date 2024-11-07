@@ -71,3 +71,21 @@ spec:
           port: 8181
   tls:
     certResolver: letsencrypt
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: tasg-rollout-tls-ingress-preview
+  namespace: tasg
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`tasg.dev.gabrielm.com.br`)
+      services:
+        - kind: Service
+          name: tasg-rollout-frontend-service-preview
+          port: 8181
+  tls:
+    certResolver: letsencrypt
